@@ -1,4 +1,4 @@
-# tip_calculator
+# study_flutter
 
 A new Flutter project.
 
