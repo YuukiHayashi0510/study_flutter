@@ -29,11 +29,13 @@ class _JsonParsingSimpleState extends State<JsonParsingSimple> {
       body: Center(
         child: Container(
           child: FutureBuilder(
-            future: getData(),
+              future: getData(),
               builder: (context, AsyncSnapshot snapshot) {
-              if(snapshot.hasData)
-                return Text(snapshot.data[0]['title']);
-              else return Text("no data");
+                if (snapshot.hasData)
+                  return Text(snapshot.data[0]['title']);
+                else
+                  return CircularProgressIndicator();
+              //  loading
               }),
         ),
       ),
