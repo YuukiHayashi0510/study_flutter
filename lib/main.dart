@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tip_calculator/ui/home.dart';
+import 'package:flutter_first_app/parsing_json/json_parsing.dart';
+import 'package:flutter_first_app/ui/home.dart';
 
 // void main() => runApp(ScaffoldExample());
 
 void main() => runApp(new MaterialApp(
-  home: BillSplitter(),
+  home: JsonParsingSimple(),
 ));

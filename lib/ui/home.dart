@@ -1,5 +1,230 @@
 import 'package:flutter/material.dart';
-import 'package:tip_calculator/util/hexColor.dart';
+import 'package:flutter_first_app/model/question.dart';
+import 'package:flutter_first_app/util/hexColor.dart';
+
+import '../model/movie.dart';
+
+
+
+
+class MovieListView extends StatelessWidget {
+  final List<Movie> movieList = Movie.getMovies();
+
+  final List movies = [
+    "Air ~まごころを君に~",
+    "エヴァンゲリヲン序",
+    "エヴァンゲリヲン破",
+    "エヴァンゲリヲンQ",
+    "シン・エヴァンゲリオン",
+    "BLEACH",
+    "月姫",
+    "Fate"
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Movies"),
+        backgroundColor: Colors.blueGrey.shade900,
+      ),
+      backgroundColor: Colors.blueGrey.shade400,
+      body: ListView.builder(
+          itemCount: movieList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              elevation: 4.5,
+              color: Colors.white,
+              child: ListTile(
+                leading: CircleAvatar(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        // color: Colors.blue,
+                        borderRadius: BorderRadius.circular(13.9)),
+                    child: Text("H"),
+                  ),
+                ),
+                trailing: Text("..."),
+                title: Text(movieList[index].title),
+                subtitle: Text("${movieList[index].title}"),
+                // onTap: () =>
+                // debugPrint("Movie name: ${movies.elementAt(index)}"),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MovieListViewDetails(
+                              movieName: movieList.elementAt(index).title, movie: movieList[index])));
+                },
+              ),
+            );
+          }),
+    );
+  }
+}
+
+// New route (screen or page )
+class MovieListViewDetails extends StatelessWidget {
+  final String movieName;
+  final Movie movie;
+
+  const MovieListViewDetails({super.key, required this.movieName, required this.movie});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Movies"),
+        backgroundColor: Colors.blueGrey.shade900,
+      ),
+      body: Center(
+        child: Container(
+          child: ElevatedButton(
+            child: Text("Go back ${this.movieName}"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class QuizApp extends StatefulWidget {
+  const QuizApp({Key? key}) : super(key: key);
+
+  @override
+  State<QuizApp> createState() => _QuizAppState();
+}
+
+class _QuizAppState extends State<QuizApp> {
+  var _currentQuestionIndex = 0;
+  List questionBank = [
+    Question.name(
+        "The U.S. Decleration of Independence was adopted in 1776.", true),
+    Question.name("There is always light behind the clouds.", false),
+    Question.name("Change before you have to.", false),
+    Question.name("If you can dream it, you can do it.", true),
+    Question.name("Love the life you live. Live the life you love.", true),
+    Question.name("My life didn’t please me, so I created my life.", false),
+    Question.name("It always seems impossible until it’s done.", true),
+    Question.name("Peace begins with a smile.", true),
+    Question.name("Love dies only when growth stops.", false),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('True Citizen'),
+        centerTitle: true,
+        backgroundColor: Colors.blueGrey,
+      ),
+      body: Builder(
+        builder: (BuildContext context) => Container(
+          color: Colors.blueGrey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Image.asset(
+                  'images/flag.png',
+                  width: 250,
+                  height: 180,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(14.4),
+                      border: Border.all(
+                          color: Colors.blueGrey.shade400,
+                          style: BorderStyle.solid)),
+                  height: 120.0,
+                  child: Center(
+                      child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      questionBank[_currentQuestionIndex].questionText,
+                      style: TextStyle(fontSize: 16.9, color: Colors.white),
+                    ),
+                  )),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _previousQuestion(),
+                    child: Icon(Icons.arrow_back),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.blueGrey.shade900),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _checkAnswer(true, context),
+                    child: Text("TRUE"),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.blueGrey.shade900),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _checkAnswer(false, context),
+                    child: Text("FALSE"),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.blueGrey.shade900),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _nextQuestion(),
+                    child: Icon(Icons.arrow_forward),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.blueGrey.shade900),
+                  ),
+                ],
+              ),
+              Spacer(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _checkAnswer(bool userChoice, BuildContext context) {
+    if (userChoice == questionBank[_currentQuestionIndex].isCorrect) {
+      final snackbar = SnackBar(
+          backgroundColor: Colors.green,
+          duration: Duration(milliseconds: 300),
+          content: Text("Correct!"));
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      _updateQuestion();
+    } else {
+      final snackbar = SnackBar(
+          backgroundColor: Colors.redAccent,
+          duration: Duration(milliseconds: 500),
+          content: Text("Incorrect!"));
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      _updateQuestion();
+    }
+  }
+
+  _updateQuestion() {
+    setState(() {
+      _currentQuestionIndex = (_currentQuestionIndex + 1) % questionBank.length;
+    });
+  }
+
+  _nextQuestion() {
+    _updateQuestion();
+  }
+
+  _previousQuestion() {
+    setState(() {
+      _currentQuestionIndex = (_currentQuestionIndex - 1) % questionBank.length;
+    });
+  }
+}
 
 class BillSplitter extends StatefulWidget {
   @override
@@ -432,8 +657,6 @@ class CustomButton extends StatelessWidget {
           content: Text("Hello Again!"),
           backgroundColor: Colors.amberAccent.shade700,
         );
-
-        Scaffold.of(context).showSnackBar(snackBar);
       },
       child: Container(
         padding: EdgeInsets.all(10.0),
